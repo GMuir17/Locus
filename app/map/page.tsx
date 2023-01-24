@@ -1,16 +1,17 @@
+"use client";
+
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "./../page.module.css";
+import Button from "@mui/material/Button";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const Map = () => {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>HI BANANA</p>
-      </div>
-    </main>
+    <div>
+      <Button variant="contained">Hello Banana</Button>
+    </div>
   );
 };
 

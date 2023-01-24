@@ -1,91 +1,40 @@
-import Image from "next/image";
-import { Inter } from "@next/font/google";
-import styles from "./page.module.css";
+"use client";
+import { useEffect } from "react";
+import Link from "next/link";
+import { Button, Grid, Stack, Container, Typography, Box } from "@mui/material";
+import { useQuery } from "react-query";
+import axios from "axios";
 
-const inter = Inter({ subsets: ["latin"] });
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
-export default function Home() {
+const Home = () => {
+  const { isLoading, error, data } = useQuery(["roman-sites"], async () => {
+    const res = await axios.get(`/api/sites`);
+    return res.data;
+  });
+
+  useEffect(() => {
+    console.log("banana data", { data });
+  }, [data]);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Hewwo
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <Container maxWidth={false} sx={{ height: "100vh", py: 4, px: 4 }}>
+      <Box sx={{ height: "15%" }}>A nice bit of explainer</Box>
+      <Box sx={{ height: "85%", display: "flex" }}>
+        <Box sx={{ width: "70%" }}>The map</Box>
+        <Box sx={{ width: "30%" }}>More details about selected</Box>
+      </Box>
+    </Container>
   );
-}
+};
+
+export default Home;
+
+// postgres details
+// username: postgres
+// password: v2udbmvkYYVr6T3Eij2X
+// endpoint: locus-1.c6wv1equojj1.eu-west-2.rds.amazonaws.com
+// db name: locus
