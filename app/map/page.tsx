@@ -1,14 +1,22 @@
 'use client'
 import { useCallback, useState } from 'react'
-import { Container, Box } from '@mui/material'
+import {
+    Container,
+    Box,
+    Typography,
+    Card,
+    CardActions,
+    CardContent,
+    Button,
+    Grid,
+} from '@mui/material'
 import {
     Map,
     NavigationControl,
-    useControl,
+    GeolocateControl,
     FullscreenControl,
     Source,
     Layer,
-    MapRef,
 } from 'react-map-gl'
 import { useQuery } from 'react-query'
 import axios from 'axios'
@@ -39,24 +47,53 @@ const MapPage = () => {
     }, [])
 
     return (
-        <Container maxWidth={false} sx={{ height: '100vh', py: 4, px: 4 }}>
-            <Box sx={{ height: '15%' }}>A nice bit of explainer</Box>
-            <Box sx={{ display: 'flex', height: '70%' }}>
-                <Box sx={{ height: '100%', width: '100%' }}>
-                    {data?.sites && (
-                        <Map
-                            initialViewState={{
-                                longitude: -4.25,
-                                latitude: 55.860916,
-                                zoom: 7,
-                            }}
-                            mapStyle="mapbox://styles/mapbox/streets-v9"
-                            mapboxAccessToken={
-                                process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-                            }
-                            onMouseEnter={onHover}
-                            interactiveLayerIds={['roman-data']}
-                        >
+        <Container
+            maxWidth={false}
+            sx={{
+                height: '100vh',
+                py: 4,
+                px: 4,
+                backgroundImage: `url(/lotsofdots.webp)`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    py: 2,
+                }}
+            >
+                <Typography variant="h4">
+                    Where were the Romans in Scotland?
+                </Typography>
+            </Box>
+            <Grid spacing={2} container sx={{ height: '90%' }}>
+                <Grid item sm={8} xs={12}>
+                    <Map
+                        initialViewState={{
+                            longitude: -4.25,
+                            latitude: 55.860916,
+                            zoom: 7,
+                        }}
+                        mapStyle="mapbox://styles/mapbox/streets-v9"
+                        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+                        onMouseEnter={onHover}
+                        interactiveLayerIds={['roman-data']}
+                        style={{
+                            borderRadius: '10px',
+                            height: '100%',
+                            width: '100%',
+                            boxShadow:
+                                '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
+                        }}
+                    >
+                        <NavigationControl />
+                        <FullscreenControl />
+                        <GeolocateControl />
+
+                        {data && (
                             <Source
                                 id="roman-data"
                                 type="geojson"
@@ -64,21 +101,79 @@ const MapPage = () => {
                             >
                                 <Layer {...dataLayer} />
                             </Source>
-                        </Map>
+                        )}
+                    </Map>
+                </Grid>
+                <Grid item sm={4} xs={12}>
+                    <Card sx={{ height: '100%', width: '100%', px: 2, py: 2 }}>
+                        {hoverInfo ? (
+                            <>
+                                <CardContent>
+                                    <Typography
+                                        sx={{ fontSize: 20 }}
+                                        color="text.secondary"
+                                    >
+                                        Class
+                                    </Typography>
+
+                                    <Typography
+                                        sx={{ mb: 2, fontSize: 20 }}
+                                        color="text.primary"
+                                    >
+                                        {hoverInfo.feature.properties.class}
+                                    </Typography>
+                                    <Typography
+                                        sx={{ fontSize: 20 }}
+                                        color="text.secondary"
+                                    >
+                                        Type
+                                    </Typography>
+
+                                    <Typography
+                                        sx={{ mb: 2, fontSize: 20 }}
+                                        color="text.primary"
+                                    >
+                                        {hoverInfo.feature.properties.type}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button
+                                        size="large"
+                                        variant="contained"
+                                        href={hoverInfo.feature.properties.link}
+                                        target="_blank"
+                                    >
+                                        Go to source
+                                    </Button>
+                                </CardActions>
+                            </>
+                        ) : (
+                            <CardContent>
+                                <Typography
+                                    sx={{ fontSize: 20 }}
+                                    color="text.secondary"
+                                >
+                                    Hover over a site to see more information
+                                </Typography>
+                            </CardContent>
+                        )}
+                    </Card>
+                </Grid>
+            </Grid>
+            {/* <Box sx={{ display: 'flex', height: '80%' }}>
+                <Box
+                    sx={{
+                        height: '100%',
+                        width: '100%',
+                    }}
+                >
+                    {data?.sites && (
+                        
                     )}
                 </Box>
-                <Box sx={{ width: '30%' }}>
-                    {hoverInfo && (
-                        <>
-                            <div>
-                                Class: {hoverInfo.feature.properties.class}
-                            </div>
-                            <div>Type: {hoverInfo.feature.properties.type}</div>
-                            <div>link: {hoverInfo.feature.properties.link}</div>
-                        </>
-                    )}
-                </Box>
-            </Box>
+
+               
+            </Box> */}
         </Container>
     )
 }
