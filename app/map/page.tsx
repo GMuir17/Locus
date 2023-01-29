@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Container, Box } from '@mui/material'
 import {
     Map,
@@ -15,7 +15,7 @@ import axios from 'axios'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { FillLayer } from 'react-map-gl'
 
-export const dataLayer: FillLayer = {
+const dataLayer: FillLayer = {
     id: 'roman-data',
     type: 'fill',
     paint: {
@@ -25,43 +25,18 @@ export const dataLayer: FillLayer = {
 }
 
 const MapPage = () => {
-    const [hoverInfo, setHoverInfo] = useState(null)
+    const [hoverInfo, setHoverInfo] = useState<any>(null)
 
     const { data } = useQuery(['roman-sites'], async () => {
         const res = await axios.get(`/api/sites`)
         return res.data
     })
 
-    useEffect(() => {
-        console.log('banana data', { data: data?.sites })
-    }, [data])
-
-    const onHover = useCallback((event) => {
-        const example = {
-            feature: {
-                type: 'Feature',
-                properties: {
-                    class: 'DEFENCE',
-                    type: 'TEMPORARY CAMP(S) (ROMAN)',
-                    link: 'https://canmore.org.uk/site/46972/',
-                    area: '266987.3933018324',
-                },
-            },
-            x: 568.9070170278131,
-            y: 209.9656829100892,
-        }
-        // console.log('banana event', { event })
-        const { features, x, y } = event
+    const onHover = useCallback((event: any) => {
+        const { features } = event
         const hoveredFeature = features && features[0]
-        hoveredFeature &&
-            console.log('banana hover', { event, feature: features[0] })
-        // prettier-ignore
-        setHoverInfo(hoveredFeature && {feature: hoveredFeature});
+        setHoverInfo(hoveredFeature && { feature: hoveredFeature })
     }, [])
-
-    useEffect(() => {
-        console.log('banana hoverInfo', { hoverInfo })
-    }, [hoverInfo])
 
     return (
         <Container maxWidth={false} sx={{ height: '100vh', py: 4, px: 4 }}>
