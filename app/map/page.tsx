@@ -1,48 +1,108 @@
 'use client'
+import { useEffect, useCallback, useState } from 'react'
 import { Container, Box } from '@mui/material'
-import Map, { Source, Layer } from 'react-map-gl'
+import {
+    Map,
+    NavigationControl,
+    useControl,
+    FullscreenControl,
+    Source,
+    Layer,
+    MapRef,
+} from 'react-map-gl'
+import { useQuery } from 'react-query'
+import axios from 'axios'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import type { FillLayer } from 'react-map-gl'
 
-import { exampleData } from './exampleData.ts'
-
-const MAPBOX_TOKEN =
-    'pk.eyJ1IjoiZ2FyeW11aXIxNyIsImEiOiJjbGRhcGY2YnUwMnJpM25ucG9hbHhiNm55In0.z201qPKYa8T4KHQEFUMT3A' // Set your mapbox token here
-
-const layerStyle = {
-    id: 'example-data',
+export const dataLayer: FillLayer = {
+    id: 'roman-data',
     type: 'fill',
     paint: {
-        'fill-color': '#ff2bff',
+        'fill-color': '#7851a9',
         'fill-opacity': 0.8,
     },
 }
 
 const MapPage = () => {
-    console.log('banana exampleData', { exampleData })
+    const [hoverInfo, setHoverInfo] = useState(null)
+
+    const { data } = useQuery(['roman-sites'], async () => {
+        const res = await axios.get(`/api/sites`)
+        return res.data
+    })
+
+    useEffect(() => {
+        console.log('banana data', { data: data?.sites })
+    }, [data])
+
+    const onHover = useCallback((event) => {
+        const example = {
+            feature: {
+                type: 'Feature',
+                properties: {
+                    class: 'DEFENCE',
+                    type: 'TEMPORARY CAMP(S) (ROMAN)',
+                    link: 'https://canmore.org.uk/site/46972/',
+                    area: '266987.3933018324',
+                },
+            },
+            x: 568.9070170278131,
+            y: 209.9656829100892,
+        }
+        // console.log('banana event', { event })
+        const { features, x, y } = event
+        const hoveredFeature = features && features[0]
+        hoveredFeature &&
+            console.log('banana hover', { event, feature: features[0] })
+        // prettier-ignore
+        setHoverInfo(hoveredFeature && {feature: hoveredFeature});
+    }, [])
+
+    useEffect(() => {
+        console.log('banana hoverInfo', { hoverInfo })
+    }, [hoverInfo])
+
     return (
         <Container maxWidth={false} sx={{ height: '100vh', py: 4, px: 4 }}>
             <Box sx={{ height: '15%' }}>A nice bit of explainer</Box>
             <Box sx={{ display: 'flex', height: '70%' }}>
                 <Box sx={{ height: '100%', width: '100%' }}>
-                    <Map
-                        initialViewState={{
-                            longitude: -4.25,
-                            latitude: 55.860916,
-                            zoom: 5.6,
-                        }}
-                        mapStyle="mapbox://styles/mapbox/streets-v9"
-                        mapboxAccessToken={MAPBOX_TOKEN}
-                    >
-                        <Source
-                            id="my-data"
-                            type="geojson"
-                            data={exampleData.polygons}
+                    {data?.sites && (
+                        <Map
+                            initialViewState={{
+                                longitude: -4.25,
+                                latitude: 55.860916,
+                                zoom: 7,
+                            }}
+                            mapStyle="mapbox://styles/mapbox/streets-v9"
+                            mapboxAccessToken={
+                                process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+                            }
+                            onMouseEnter={onHover}
+                            interactiveLayerIds={['roman-data']}
                         >
-                            <Layer {...layerStyle} />
-                        </Source>
-                    </Map>
+                            <Source
+                                id="roman-data"
+                                type="geojson"
+                                data={data.sites}
+                            >
+                                <Layer {...dataLayer} />
+                            </Source>
+                        </Map>
+                    )}
                 </Box>
-                <Box sx={{ width: '30%' }}>More details about selected</Box>
+                <Box sx={{ width: '30%' }}>
+                    {hoverInfo && (
+                        <>
+                            <div>
+                                Class: {hoverInfo.feature.properties.class}
+                            </div>
+                            <div>Type: {hoverInfo.feature.properties.type}</div>
+                            <div>link: {hoverInfo.feature.properties.link}</div>
+                        </>
+                    )}
+                </Box>
             </Box>
         </Container>
     )

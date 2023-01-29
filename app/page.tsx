@@ -1,8 +1,9 @@
 'use client'
 import { useEffect } from 'react'
-import { Container, Box } from '@mui/material'
+import { Container, Box, Button } from '@mui/material'
 import { useQuery } from 'react-query'
 import axios from 'axios'
+import Link from 'next/link'
 
 const Home = () => {
     const { data } = useQuery(['roman-sites'], async () => {
@@ -16,10 +17,10 @@ const Home = () => {
 
     return (
         <Container maxWidth={false} sx={{ height: '100vh', py: 4, px: 4 }}>
-            <Box sx={{ height: '15%' }}>A nice bit of explainer</Box>
-            <Box sx={{ height: '85%', display: 'flex' }}>
-                <Box sx={{ width: '70%' }}></Box>
-                <Box sx={{ width: '30%' }}>More details about selected</Box>
+            <Box sx={{ height: '15%' }}>
+                <Button>
+                    <Link href="/map">Go to map</Link>
+                </Button>
             </Box>
         </Container>
     )
