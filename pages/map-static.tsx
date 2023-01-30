@@ -1,5 +1,4 @@
-'use client'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, FC } from 'react'
 import {
     Container,
     Box,
@@ -18,10 +17,10 @@ import {
     Source,
     Layer,
 } from 'react-map-gl'
-import { useQuery } from 'react-query'
 import axios from 'axios'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { FillLayer } from 'react-map-gl'
+import { GetStaticProps } from 'next'
 
 const dataLayer: FillLayer = {
     id: 'roman-data',
@@ -32,13 +31,13 @@ const dataLayer: FillLayer = {
     },
 }
 
-const MapPage = () => {
-    const [hoverInfo, setHoverInfo] = useState<any>(null)
+interface Props {
+    data: any
+}
 
-    const { data } = useQuery(['roman-sites'], async () => {
-        const res = await axios.get(`/api/sites`)
-        return res.data
-    })
+const MapStaticPage: FC<Props> = (props) => {
+    const { data } = props
+    const [hoverInfo, setHoverInfo] = useState<any>(null)
 
     const onHover = useCallback((event: any) => {
         const { features } = event
@@ -94,11 +93,7 @@ const MapPage = () => {
                         <GeolocateControl />
 
                         {data && (
-                            <Source
-                                id="roman-data"
-                                type="geojson"
-                                data={data.sites}
-                            >
+                            <Source id="roman-data" type="geojson" data={data}>
                                 <Layer {...dataLayer} />
                             </Source>
                         )}
@@ -160,4 +155,19 @@ const MapPage = () => {
     )
 }
 
-export default MapPage
+export default MapStaticPage
+
+export const getStaticProps: GetStaticProps = async () => {
+    const tempUrl = new URL(`${process.env.LAMBDA_ROOT}/sites`)
+    const config = {
+        headers: { 'X-API-Key': process.env.AWS_API_KEY },
+    }
+
+    const sitesRequest = await axios.get(tempUrl.toString(), config)
+    const sites = sitesRequest.data.body
+    return {
+        props: {
+            data: sites,
+        },
+    }
+}
