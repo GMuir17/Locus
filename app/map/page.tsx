@@ -114,7 +114,9 @@ const MapPage = () => {
                     </Map>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                    <Card sx={{ height: '50%', width: '100%', px: 2, py: 2 }}>
+                    <Card
+                        sx={{ width: '100%', px: 2, py: 2, minHeight: '50vh' }}
+                    >
                         <CardContent>
                             <Typography variant="h4" color="text.secondary">
                                 Hover over a purple site to see more information
