@@ -7,9 +7,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             case 'GET':
                 try {
                     const tempUrl = new URL(`${process.env.LAMBDA_ROOT}/sites`)
-
-                    // tempUrl.searchParams.set('startdate', startDate as string)
-
                     const config = {
                         headers: { 'X-API-Key': process.env.AWS_API_KEY },
                     }
