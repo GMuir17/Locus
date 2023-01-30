@@ -1,66 +1,8 @@
 'use client'
-import { useCallback, useState } from 'react'
-import {
-    Container,
-    Box,
-    Typography,
-    Card,
-    CardActions,
-    CardContent,
-    Button,
-    Grid,
-} from '@mui/material'
-import {
-    Map,
-    NavigationControl,
-    GeolocateControl,
-    FullscreenControl,
-    Source,
-    Layer,
-} from 'react-map-gl'
-import { useQuery } from 'react-query'
-import axios from 'axios'
-import 'mapbox-gl/dist/mapbox-gl.css'
-import type { FillLayer } from 'react-map-gl'
+import { Container, Box, Typography, Card, Grid } from '@mui/material'
 import Link from 'next/link'
-const dataLayer: FillLayer = {
-    id: 'roman-data',
-    type: 'fill',
-    paint: {
-        'fill-color': '#7851a9',
-        'fill-opacity': 0.8,
-    },
-}
 
 const Home = () => {
-    const [hoverInfo, setHoverInfo] = useState<any>(null)
-
-    const { data } = useQuery(['roman-sites'], async () => {
-        const res = await axios.get(`/api/sites`)
-        return res.data
-    })
-
-    const onHover = useCallback((event: any) => {
-        const { features } = event
-        const hoveredFeature = features && features[0]
-        setHoverInfo(hoveredFeature && { feature: hoveredFeature })
-    }, [])
-
-    // const styles = {
-    //     buttonBase: {
-    //         my: 2,
-    //         mx: 3,
-    //         display: 'block',
-    //         color: mode === 'dark' ? 'white' : 'black',
-    //         '&:hover': {
-    //             backgroundColor: 'rgba(255,255,255,0.2)',
-    //         },
-    //     },
-    //     active: {
-    //         backgroundColor: 'rgba(255,0,0,0.2)',
-    //     },
-    // }
-
     return (
         <Container
             maxWidth={false}

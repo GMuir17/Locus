@@ -9,7 +9,9 @@ import {
     CardContent,
     Button,
     Grid,
+    IconButton,
 } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import {
     Map,
     NavigationControl,
@@ -22,6 +24,7 @@ import { useQuery } from 'react-query'
 import axios from 'axios'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { FillLayer } from 'react-map-gl'
+import Link from 'next/link'
 
 const dataLayer: FillLayer = {
     id: 'roman-data',
@@ -65,6 +68,12 @@ const MapPage = () => {
                     py: 2,
                 }}
             >
+                <Link href="/">
+                    <IconButton>
+                        <ArrowBackIcon />
+                    </IconButton>
+                </Link>
+
                 <Typography variant="h4">
                     Where were the Romans in Scotland?
                 </Typography>
@@ -105,7 +114,7 @@ const MapPage = () => {
                     </Map>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                    <Card sx={{ height: '100%', width: '100%', px: 2, py: 2 }}>
+                    <Card sx={{ height: '50%', width: '100%', px: 2, py: 2 }}>
                         <CardContent>
                             <Typography variant="h4" color="text.secondary">
                                 Hover over a purple site to see more information

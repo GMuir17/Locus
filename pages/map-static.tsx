@@ -8,7 +8,9 @@ import {
     CardContent,
     Button,
     Grid,
+    IconButton,
 } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import {
     Map,
     NavigationControl,
@@ -21,6 +23,7 @@ import axios from 'axios'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { FillLayer } from 'react-map-gl'
 import { GetStaticProps } from 'next'
+import { useRouter } from 'next/router'
 
 const dataLayer: FillLayer = {
     id: 'roman-data',
@@ -37,6 +40,7 @@ interface Props {
 
 const MapStaticPage: FC<Props> = (props) => {
     const { data } = props
+    const router = useRouter()
     const [hoverInfo, setHoverInfo] = useState<any>(null)
 
     const onHover = useCallback((event: any) => {
@@ -64,6 +68,9 @@ const MapStaticPage: FC<Props> = (props) => {
                     py: 2,
                 }}
             >
+                <IconButton onClick={() => router.push('/')}>
+                    <ArrowBackIcon />
+                </IconButton>
                 <Typography variant="h4">
                     Where were the Romans in Scotland?
                 </Typography>
@@ -100,7 +107,7 @@ const MapStaticPage: FC<Props> = (props) => {
                     </Map>
                 </Grid>
                 <Grid item sm={4} xs={12}>
-                    <Card sx={{ height: '100%', width: '100%', px: 2, py: 2 }}>
+                    <Card sx={{ height: '50%', width: '100%', px: 2, py: 2 }}>
                         <CardContent>
                             <Typography variant="h4" color="text.secondary">
                                 Hover over a purple site to see more information
